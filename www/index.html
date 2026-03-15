@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioWasm — FASTA/FASTQ Toolkit</title>
+    <meta name="description" content="Client-side bioinformatics FASTA/FASTQ processing toolkit powered by Rust + WebAssembly. All processing runs in your browser.">
+
+    <!-- Fonts -->
+    <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=jetbrains-mono@400,500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🧬</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <svg class="logo-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="BioWasm DNA helix logo">
+                    <path d="M10 4C10 4 14 8 14 16C14 24 10 28 10 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M22 4C22 4 18 8 18 16C18 24 22 28 22 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="10" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                    <line x1="11" y1="16" x2="21" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                    <line x1="10" y1="22" x2="22" y2="22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                </svg>
+                <span class="logo-text">BioWasm</span>
+                <span class="logo-badge">Toolkit</span>
+            </div>
+            <div class="header-meta">
+                <span class="badge badge-accent">Rust + Wasm</span>
+                <span class="badge">Client-side</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App -->
+    <main class="app">
+        <!-- Upload Section -->
+        <section class="panel upload-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Input
+                </h2>
+                <div class="format-toggle" id="formatToggle">
+                    <button class="format-btn active" data-format="fasta">FASTA</button>
+                    <button class="format-btn" data-format="fastq">FASTQ</button>
+                </div>
+            </div>
+
+            <div class="upload-zone" id="uploadZone">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+                <p class="upload-text">Drop .fasta / .fastq file here or <label for="fileInput" class="upload-link">browse</label></p>
+                <p class="upload-hint">All processing happens locally in your browser</p>
+                <input type="file" id="fileInput" accept=".fasta,.fa,.fna,.fastq,.fq,.fas,.seq,.txt" hidden>
+            </div>
+
+            <div class="file-info" id="fileInfo" hidden>
+                <div class="file-info-row">
+                    <span class="file-name" id="fileName"></span>
+                    <button class="btn-ghost" id="clearFile" title="Clear file">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+                <div class="file-stats" id="fileStats"></div>
+            </div>
+
+            <!-- Paste input as alternative -->
+            <details class="paste-section">
+                <summary class="paste-toggle">Or paste sequence data</summary>
+                <textarea id="pasteInput" class="paste-area" rows="6" placeholder=">seq1 example sequence&#10;ATCGATCGATCG&#10;>seq2 another sequence&#10;GCTAGCTAGCTA" spellcheck="false"></textarea>
+                <button class="btn btn-secondary" id="loadPaste">Load pasted data</button>
+            </details>
+        </section>
+
+        <!-- Task Selection -->
+        <section class="panel task-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    Operations
+                </h2>
+            </div>
+
+            <div class="task-categories">
+                <!-- Category tabs -->
+                <div class="category-tabs" id="categoryTabs">
+                    <button class="cat-tab active" data-cat="convert">Format</button>
+                    <button class="cat-tab" data-cat="qc">Quality</button>
+                    <button class="cat-tab" data-cat="manipulate">Sequence</button>
+                    <button class="cat-tab" data-cat="search">Search</button>
+                    <button class="cat-tab" data-cat="stats">Stats</button>
+                    <button class="cat-tab" data-cat="sample">Sample</button>
+                    <button class="cat-tab" data-cat="merge">Merge</button>
+                </div>
+
+                <!-- Task lists per category -->
+                <div class="task-list" id="taskList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Parameters -->
+            <div class="params-section" id="paramsSection" hidden>
+                <div class="params-header">
+                    <h3 class="params-title" id="paramsTitle">Parameters</h3>
+                </div>
+                <div class="params-form" id="paramsForm">
+                    <!-- Dynamic inputs -->
+                </div>
+            </div>
+
+            <!-- Run button -->
+            <div class="run-section">
+                <button class="btn btn-primary btn-run" id="runBtn" disabled>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Run
+                </button>
+                <div class="run-status" id="runStatus"></div>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <section class="panel results-panel" id="resultsPanel" hidden>
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Results
+                </h2>
+                <div class="result-tabs" id="resultTabs">
+                    <button class="result-tab active" data-view="preview">Preview</button>
+                    <button class="result-tab" data-view="table">Table</button>
+                    <button class="result-tab" data-view="chart">Chart</button>
+                </div>
+            </div>
+
+            <div class="result-view" id="resultPreview">
+                <pre class="result-code" id="resultCode"></pre>
+            </div>
+            <div class="result-view" id="resultTable" hidden>
+                <div class="table-wrap">
+                    <table class="data-table" id="dataTable">
+                        <thead id="dataTableHead"></thead>
+                        <tbody id="dataTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="result-view" id="resultChart" hidden>
+                <canvas id="chartCanvas" width="800" height="400"></canvas>
+            </div>
+
+            <div class="result-actions">
+                <button class="btn btn-secondary" id="downloadBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download
+                </button>
+                <button class="btn btn-ghost" id="copyBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                </button>
+                <span class="result-meta" id="resultMeta"></span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>All processing runs client-side via WebAssembly. No data leaves your browser.</p>
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+    </footer>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay" hidden>
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Initializing Wasm module...</p>
+    </div>
+
+    <!-- Chart.js for plots -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>

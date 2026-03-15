@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: bio-wasm-app
+    runtime: static
+    buildCommand: |
+      curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh &&
+      wasm-pack build --target web --out-dir www/pkg --release
+    staticPublishPath: ./www
+    headers:
+      - path: /pkg/*.wasm
+        name: Content-Type
+        value: application/wasm
+    envVars:
+      - key: RUST_LOG
+        value: info
