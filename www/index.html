@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BioWasm — FASTA/FASTQ Toolkit</title>
+    <title>SeqTools — FASTA/FASTQ Toolkit</title>
     <meta name="description" content="Client-side bioinformatics FASTA/FASTQ processing toolkit powered by Rust + WebAssembly. All processing runs in your browser.">
 
     <!-- Fonts -->
@@ -17,19 +17,18 @@
     <header class="header">
         <div class="header-inner">
             <div class="logo">
-                <svg class="logo-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="BioWasm DNA helix logo">
+                <svg class="logo-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="SeqTools DNA helix logo">
                     <path d="M10 4C10 4 14 8 14 16C14 24 10 28 10 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                     <path d="M22 4C22 4 18 8 18 16C18 24 22 28 22 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                     <line x1="10" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
                     <line x1="11" y1="16" x2="21" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
                     <line x1="10" y1="22" x2="22" y2="22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
                 </svg>
-                <span class="logo-text">BioWasm</span>
+                <span class="logo-text">SeqTools</span>
                 <span class="logo-badge">Toolkit</span>
             </div>
             <div class="header-meta">
-                <span class="badge badge-accent">Rust + Wasm</span>
-                <span class="badge">Client-side</span>
+                <span class="badge badge-accent">Rust + Wasm (Client-side)</span>
             </div>
         </div>
     </header>
@@ -166,10 +165,45 @@
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>All processing runs client-side via WebAssembly. No data leaves your browser.</p>
-        <a href="https://www.linkedin.com/in/bhagesh-hunakunti/" target="_blank" rel="noopener noreferrer">Created by Bhagesh</a>
+    <!-- New Footer -->
+    <footer class="w-full border-t border-border bg-card/50 backdrop-blur-sm">
+      <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-5">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <!-- Left: Branding -->
+          <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span>
+              &copy; <span id="footer-year"></span> Created by
+              <span class="font-semibold text-foreground">Bhagesh</span>
+            </span>
+            <a>
+                <span>&nbsp;|&nbsp;</span>
+            </a>
+            <a
+              href="https://github.com/bhagesh-h"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="GitHub"
+              data-testid="link-github"
+            >
+              <span>GitHub</span>
+            </a>
+            <a>
+                <span>&nbsp;|&nbsp;</span>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/bhagesh-hunakunti/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-[#0A66C2] transition-colors"
+              aria-label="LinkedIn"
+              data-testid="link-linkedin"
+            >
+              <span>LinkedIn</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </footer>
 
     <!-- Loading overlay -->
@@ -181,5 +215,9 @@
     <!-- Chart.js for plots -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" crossorigin="anonymous"></script>
     <script src="js/app.js" type="module"></script>
+    <script>
+      document.getElementById('footer-year').textContent =
+        new Date().getFullYear();
+    </script>
 </body>
 </html>

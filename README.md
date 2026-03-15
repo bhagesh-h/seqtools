@@ -1,6 +1,6 @@
-# BioWasm — FASTA/FASTQ Toolkit
+# SeqTools - FASTA/FASTQ Toolkit
 
-A client-side bioinformatics toolkit for FASTA/FASTQ file processing, powered by **Rust + WebAssembly**. All operations run entirely in your browser — no data is uploaded to any server.
+A client-side bioinformatics toolkit for FASTA/FASTQ file processing, powered by **Rust + WebAssembly**. All operations run entirely in your browser - no data is uploaded to any server.
 
 ## Features
 
@@ -65,19 +65,6 @@ cd www && python3 -m http.server 8080
 
 Open http://localhost:8080
 
-## Deploy on Render.com
-
-1. Push this repo to GitHub
-2. Go to [Render Dashboard](https://dashboard.render.com)
-3. Click **New** → **Static Site**
-4. Connect your GitHub repo
-5. Configure:
-   - **Build Command**: `curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh && wasm-pack build --target web --out-dir www/pkg --release`
-   - **Publish Directory**: `./www`
-6. Deploy
-
-Or use the included `render.yaml` for Blueprint deployment.
-
 ## Architecture
 
 ```
@@ -97,6 +84,6 @@ bio-wasm-app/
 
 The Rust code in `src/lib.rs` implements a custom FASTA/FASTQ parser and all bioinformatics operations. It compiles to WebAssembly via `wasm-pack` and is called from JavaScript through `wasm-bindgen`.
 
-## License
+## Author
 
-MIT
+[Bhagesh Hunakunti](https://www.linkedin.com/in/bhagesh-hunakunti/)
